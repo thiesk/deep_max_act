@@ -8,19 +8,12 @@ import cv2 as cv
 from tqdm import tqdm
 import torch.nn.functional as F
 from video import bake_vid
-
-def total_variation(image):
-    dx = image[:, :, 1:] - image[:, :, :-1]
-    dy = image[:, 1:, :] - image[:, :-1, :]
-    dx_norm = torch.norm(dx)
-    dy_norm = torch.norm(dy)
-    return dx_norm + dy_norm
-
-def total_variation_regularization_loss(image, lambda_tv):
-    return lambda_tv * total_variation(image)
+import os
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(device)
+for file in os.listdir("./output/"):
+    os.remove(f"./output/{file}")
 
 fake_img = Variable(torch.zeros(parameters.size, device=device), requires_grad = True)
 model_dict = {"google":models.googlenet(pretrained = True).to(device),
