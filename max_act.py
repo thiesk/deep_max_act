@@ -8,15 +8,18 @@ import cv2 as cv
 from tqdm import tqdm
 
 fake_img = Variable(torch.zeros(parameters.size), requires_grad = True)
-model = models.resnet18(pretrained = True)
+model = models.vit_b_32(pretrained = True)
 model.eval()
 
 step = 10000
 classish = 4
-optimizer = torch.optim.Adam([fake_img], lr=0.01)
+optimizer = torch.optim.Adam([fake_img], lr=0.06)
 
 for i in tqdm(range(step)):
     out = model(fake_img)
+    output_tensor = torch.zeros_like(out)
+    # Set the value at index i to the original value
+    output_tensor[0][classish] = out[0][classish]
     target_score = out[0, classish]
 
     # Backward pass
